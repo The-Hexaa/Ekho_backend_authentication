@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify, current_app
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_mail import Message
+from flask_cors import CORS
 from .models import User  # Assuming User model is imported correctly
 from . import db, mail  # Assuming db and mail instances are correctly imported
 
 main = Blueprint('main', __name__)
+CORS(main)  # Enable CORS for the blueprint
 
 @main.route('/', methods=['GET'])
 def index():

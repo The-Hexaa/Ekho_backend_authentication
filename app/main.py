@@ -1,19 +1,14 @@
-from datetime import datetime
-from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
-from flask_login import login_user, login_required, logout_user, current_user
+from flask import Blueprint, request, jsonify, current_app
+from flask_login import login_user, login_required, logout_user
 from flask_mail import Message
-from flask import request, current_app
-from .models import User
-from . import db, mail
-from flask import jsonify
-
+from .models import User  # Assuming User model is imported correctly
+from . import db, mail  # Assuming db and mail instances are correctly imported
 
 main = Blueprint('main', __name__)
 
 @main.route('/', methods=['GET'])
 def index():
     return jsonify({'message': 'Welcome to the API!'})
-
 
 @main.route('/login', methods=['POST'])
 def login():
@@ -38,7 +33,6 @@ def login():
     login_user(user)
     return jsonify({'message': 'Login successful!'})
 
-
 @main.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
@@ -62,14 +56,7 @@ def register():
     send_verification_email(user)
     return jsonify({'message': 'Registration successful! A confirmation email has been sent.'})
 
-
-def send_verification_email(user):
-    token = user.generate_verification_token()
-    verification_link = url_for('main.confirm_email', token=token, _external=True)
-    msg = Message('Confirm Your Email Address', sender=current_app.config['MAIL_USERNAME'], recipients=[user.email])
-    msg.body = f'Please click the following link to verify your email address: {verification_link}'
-    mail.send(msg)
-
+@main.route('/confirm_email/<token>', methods=['GET'])
 def confirm_email(token):
     user = User.verify_verification_token(token)
     if user is None:
@@ -85,6 +72,10 @@ def logout():
     logout_user()
     return jsonify({'message': 'Logout successful!'})
 
+def send_verification_email(user):
+    token = user.generate_verification_token()
+    verification_link = f"http://localhost:5000/confirm_email/{token}"  # Replace with your actual confirmation URL
+    msg = Message('Confirm Your Email Address', sender=current_app.config['MAIL_USERNAME'], recipients=[user.email])
+    msg.body = f'Please click the following link to verify your email address: {verification_link}'
+    mail.send(msg)
 
-
-    

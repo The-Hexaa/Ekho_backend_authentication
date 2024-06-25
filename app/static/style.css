@@ -1,0 +1,61 @@
+body {
+    padding-top: 3.5rem;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.container {
+    margin-top: 20px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group input[type="checkbox"] {
+    width: 1em;
+    height: 1em;
+}
+
+/* css for the about us page */
+
+.card {
+    border: none;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    padding: 30px;
+}
+
+.card-title {
+    font-size: 2.5rem;
+    color: #333;
+}
+
+.card-text {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+@keyframes colorShift {
+    0% {
+        color: #4A5568; /* Initial color, e.g., gray-700 */
+    }
+    50% {
+        color: #2B6CB0; /* Intermediate color, e.g., blue-600 */
+    }
+    100% {
+        color: #4A5568; /* Final color, back to initial */
+    }
+}
+
+.animate-colorShift {
+    animation: colorShift 3s ease-in-out infinite;
+}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Home - HydraFlow
+{% endblock %}
+
+{% block content %}
+    <div class="bg-white shadow-md rounded-lg p-8 mb-8">
+        <h1 class="text-4xl font-bold mb-4">Welcome to HydraFlow!</h1>
+        <p class="text-lg mb-4">Enter your daily report and manage your tasks easily.</p>
+        <hr class="my-4 border-gray-300">
+        {% if not current_user.is_authenticated %}
+            <p class="text-lg mb-4">Get started by signing up or logging in.</p>
+            <div class="flex space-x-4">
+                <a class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" href="{{url_for('main.register')}}" role="button">Sign Up</a>
+                <a class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600" href="{{url_for('main.login')}}" role="button">Log In</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

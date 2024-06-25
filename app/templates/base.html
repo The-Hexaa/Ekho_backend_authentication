@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HydraFlow{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="bg-white border-b border-gray-200 h-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-0">
+                <div class="flex items-end">
+                    <div class="flex">
+                        <a class="text-xl font-semibold text-gray-900 mr-4 flex items-end animate-colorShift" href="#">
+                            <img src="{{ url_for('static', filename='images/logo/logo.png') }}" alt="Logo" class="ml-auto mr-0 h-8 w-auto mr-1">
+                            Hydraflow
+                        </a>
+                    </div>
+                    <div class="hidden sm:flex sm:space-x-8">
+                        <a href="{{ url_for('main.index') }}" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium no-underline">Home</a>
+                        
+                        </div>
+                </div>
+                <div class="hidden sm:flex sm:items-end">
+                    <div class="ml-3 relative">
+                        <div class="flex space-x-4">
+                            {% if current_user.is_authenticated %}
+                                <a href="{{ url_for('main.logout') }}" class="text-gray-500 hover:text-gray-700 no-underline">Logout</a>
+                            {% else %}
+                                {% if 'login' in request.url %}
+                                    <a href="{{ url_for('main.register') }}" class="text-gray-500 hover:text-gray-700 no-underline">Register</a>
+                                {% elif 'register' in request.url %}
+                                    <a href="{{ url_for('main.login') }}" class="text-gray-500 hover:text-gray-700 no-underline">Login</a>
+                                {% else %}
+                                    <a href="{{ url_for('main.login') }}" class="text-gray-500 hover:text-gray-700 no-underline">Login</a>
+                                    <a href="{{ url_for('main.register') }}" class="text-gray-500 hover:text-gray-700 no-underline">Register</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container mx-auto mt-5">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == 'success' %}
+                        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 flex justify-between items-center" role="alert">
+                            <p class="flex-grow">{{ message }}</p>
+                            <button type="button" class="text-green-700" onclick="this.parentElement.style.display='none';">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% elif category == 'danger' %}
+                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 flex justify-between items-center" role="alert">
+                            <p class="flex-grow">{{ message }}</p>
+                            <button type="button" class="text-red-700" onclick="this.parentElement.style.display='none';">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% elif category == 'warning' %}
+                        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 flex justify-between items-center" role="alert">
+                            <p class="flex-grow">{{ message }}</p>
+                            <button type="button" class="text-yellow-700" onclick="this.parentElement.style.display='none';">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% elif category == 'info' %}
+                        <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 mb-4 flex justify-between items-center" role="alert">
+                            <p class="flex-grow">{{ message }}</p>
+                            <button type="button" class="text-blue-700" onclick="this.parentElement.style.display='none';">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% else %}
+                        <div class="bg-gray-100 border-l-4 border-gray-500 text-gray-700 p-4 mb-4 flex justify-between items-center" role="alert">
+                            <p class="flex-grow">{{ message }}</p>
+                            <button type="button" class="text-gray-700" onclick="this.parentElement.style.display='none';">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="container mx-auto py-4">
+            <ul class="flex justify-center space-x-6">
+                <li><a href="{{ url_for('main.index') }}" class="text-gray-500 hover:text-gray-700">Home</a></li>
+            </ul>
+            <p class="text-center text-gray-500 mt-4">Copyright © 2024 The Hexaa Pvt. Ltd.</p>
+        </div>
+    </footer>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

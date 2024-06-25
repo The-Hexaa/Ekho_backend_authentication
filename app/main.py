@@ -5,85 +5,63 @@ from flask_mail import Message
 from flask import request, current_app
 from .models import User
 from . import db, mail
+from flask import jsonify
 
 
 main = Blueprint('main', __name__)
 
 @main.route('/', methods=['GET'])
 def index():
-    return render_template('index.html') 
+    return jsonify({'message': 'Welcome to the API!'})
 
 
-@main.route('/login', methods=['GET', 'POST'])
+@main.route('/login', methods=['POST'])
 def login():
     if current_user.is_authenticated:
-        flash('You are already logged in!', 'info')
-        return redirect(url_for('main.index'))
-    
-    if request.method == 'POST':
-        if request.is_json:
-            data = request.get_json()
-            email = data.get('email')
-            password = data.get('password')
-        else:
-            email = request.form.get('email')
-            password = request.form.get('password')
+        return jsonify({'message': 'You are already logged in!'})
 
-        if not email or not password:
-            flash('Email or Password missing!', 'danger')
-            return redirect(url_for('main.login'))
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
 
-        user = User.query.filter_by(email=email).first()
-        
-        if user and user.check_password(password):
-            if not user.email_verified:
-                flash('Please verify your email address before logging in.', 'warning')
-                return redirect(url_for('main.login'))
-            login_user(user)
-            return redirect(url_for('main.index'))
-        flash('Invalid credentials', 'danger')
-    
-    return render_template('login.html')
+    if not email or not password:
+        return jsonify({'error': 'Email or Password missing!'}), 400
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user or not user.check_password(password):
+        return jsonify({'error': 'Invalid credentials'}), 401
+
+    if not user.email_verified:
+        return jsonify({'error': 'Please verify your email address before logging in.'}), 401
+
+    login_user(user)
+    return jsonify({'message': 'Login successful!'})
 
 
-@main.route('/register', methods=['GET', 'POST'])
+@main.route('/register', methods=['POST'])
 def register():
-    if current_user.is_authenticated:
-        flash("You are already logged in!", 'info')
-        return redirect(url_for('main.index'))
-    
-    if request.method == 'POST':
-        # Check if request is JSON
-        if request.is_json:
-            data = request.get_json()
-            email = data.get('email')
-            password = data.get('password')
-        else:
-            email = request.form.get('email')
-            password = request.form.get('password')
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
 
-        if not email or not password:
-            flash('Email or Password missing!', 'danger')
-            return redirect(url_for('main.register'))
+    if not email or not password:
+        return jsonify({'error': 'Email or Password missing!'}), 400
 
-        if not email.endswith('@thehexaa.com'):
-            flash("Please enter a valid @thehexaa.com email address!", 'warning')
-            return redirect(url_for('main.register'))
+    if not email.endswith('@thehexaa.com'):
+        return jsonify({'error': 'Please enter a valid @thehexaa.com email address!'}), 400
 
-        existing_user = User.query.filter_by(email=email).first()
-        if existing_user:
-            flash("User with this email already exists.", 'danger')
-            return redirect(url_for('main.register'))
+    existing_user = User.query.filter_by(email=email).first()
+    if existing_user:
+        return jsonify({'error': 'User with this email already exists.'}), 400
 
-        user = User(email=email)
-        user.set_password(password)
-        db.session.add(user)
-        db.session.commit()
-        send_verification_email(user)
-        flash('A confirmation email has been sent to your email address.', 'success')
-        return redirect(url_for('main.login'))
+    user = User(email=email)
+    user.set_password(password)
+    db.session.add(user)
+    db.session.commit()
+    send_verification_email(user)
+    return jsonify({'message': 'Registration successful! A confirmation email has been sent.'})
 
-    return render_template('register.html')
 
 def send_verification_email(user):
     token = user.generate_verification_token()
@@ -92,22 +70,21 @@ def send_verification_email(user):
     msg.body = f'Please click the following link to verify your email address: {verification_link}'
     mail.send(msg)
 
-@main.route('/confirm_email/<token>')
 def confirm_email(token):
     user = User.verify_verification_token(token)
     if user is None:
-        flash('The confirmation link is invalid or has expired.', 'danger')
-        return redirect(url_for('main.login'))
+        return jsonify({'error': 'The confirmation link is invalid or has expired.'}), 400
+
     user.email_verified = True
     db.session.commit()
-    flash('Your email has been verified!', 'success')
-    return redirect(url_for('main.login'))
+    return jsonify({'message': 'Email verified successfully!'})
 
-@main.route('/logout')
+@main.route('/logout', methods=['POST'])
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('main.login'))
+    return jsonify({'message': 'Logout successful!'})
+
 
 
     

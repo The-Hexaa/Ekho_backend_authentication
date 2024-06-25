@@ -74,7 +74,7 @@ def logout():
 
 def send_verification_email(user):
     token = user.generate_verification_token()
-    verification_link = f"http://localhost:5000/confirm_email/{token}"  # Replace with your actual confirmation URL
+    verification_link = f"http://example.com/confirm_email/{token}"  # Replace with your actual confirmation URL
     msg = Message('Confirm Your Email Address', sender=current_app.config['MAIL_USERNAME'], recipients=[user.email])
     msg.body = f'Please click the following link to verify your email address: {verification_link}'
     mail.send(msg)

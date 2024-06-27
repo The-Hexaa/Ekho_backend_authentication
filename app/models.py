@@ -3,6 +3,8 @@ from flask_login import UserMixin
 from . import db
 from itsdangerous import URLSafeTimedSerializer as Serializer
 from flask import current_app
+from flask_login import UserMixin
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -10,6 +12,10 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(150), nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=True)
     email_verified = db.Column(db.Boolean, default=False, nullable=False)
+    full_name = db.Column(db.String(150), nullable=False)
+    role = db.Column(db.String(50), nullable=False) 
+    company_size = db.Column(db.String(20), nullable=False)  
+    
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

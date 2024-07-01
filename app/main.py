@@ -29,8 +29,8 @@ def login():
     if not user or not user.check_password(password):
         return jsonify({'error': 'Invalid credentials'}), 401
 
-    if not user.email_verified:
-        return jsonify({'error': 'Please verify your email address before logging in.'}), 401
+    # if not user.email_verified:
+    #     return jsonify({'error': 'Please verify your email address before logging in.'}), 401
 
     login_user(user)
     return jsonify({'message': 'Login successful!'})
@@ -44,8 +44,8 @@ def register():
     if not email or not password:
         return jsonify({'error': 'Email or Password missing!'}), 400
 
-    if not email.endswith('@thehexaa.com'):
-        return jsonify({'error': 'Please enter a valid @thehexaa.com email address!'}), 400
+    if not email.endswith('@ekho.academy'):
+        return jsonify({'error': 'Please enter a valid @ekho.academy email address!'}), 400
 
     existing_user = User.query.filter_by(email=email).first()
     if existing_user:
@@ -55,7 +55,7 @@ def register():
     user.set_password(password)
     db.session.add(user)
     db.session.commit()
-    send_verification_email(user)
+    # send_verification_email(user)
     return jsonify({'message': 'Registration successful! A confirmation email has been sent.'})
 
 @main.route('/confirm_email/<token>', methods=['GET'])

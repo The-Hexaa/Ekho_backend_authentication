@@ -12,20 +12,20 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'your_secret_key'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
-    # app.config['MAIL_SERVER'] = 'smtp.thehexaa.com'
+    # app.config['MAIL_SERVER'] = 'smtp.ekho.academy'
     # app.config['MAIL_PORT'] = 587
     # app.config['MAIL_USE_TLS'] = True
     # app.config['MAIL_USERNAME'] = os.getenv('EMAIL_HOST')
     # app.config['MAIL_PASSWORD'] = os.getenv('EMAIL_PASSWORD')
 
     # Configure Flask-Mail
-    app.config['MAIL_SERVER'] = 'mail.thehexaa.com'
+    app.config['MAIL_SERVER'] = 'mail.ekho.academy'
     app.config['MAIL_PORT'] = 25
     app.config['MAIL_USE_TLS'] = False
     app.config['MAIL_USE_SSL'] = False
     app.config['MAIL_USERNAME'] = None
     app.config['MAIL_PASSWORD'] = None
-    app.config['MAIL_DEFAULT_SENDER'] = 'daily-reports@thehexaa.com'
+    app.config['MAIL_DEFAULT_SENDER'] = 'daily-reports@ekho.academy'
 
     # Initialize extensions
     db.init_app(app)
